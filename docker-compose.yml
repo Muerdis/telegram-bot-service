@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  api:
+    build: ./api
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./api/:/usr/src/app/
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+    networks:
+      - bot_network
+  bot:
+    build: ./bot
+    volumes:
+      - ./bot/:/app/
+    env_file:
+      - ./.env.dev
+    networks:
+      - bot_network
+
+networks: 
+  bot_network:
+    driver : bridge
