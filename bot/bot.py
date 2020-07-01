@@ -2,6 +2,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CallbackQueryHandler, CommandHandler, ConversationHandler
 import logging
 import requests
+import os
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -9,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 ALL, END = ['all', 'end']
+TOKEN = os.environ.get('TOKEN')
 
 
 def start(update, context):
@@ -26,7 +28,7 @@ def run_action(update, context):
     query.answer()
     action_info = query.data.split()
 
-    resp = requests.get(f'http://127.0.0.1:5000/api/developer/{action_info[1]}/{action_info[0]}')
+    resp = requests.get(f'http://172.18.0.1:5000/api/developer/{action_info[1]}/{action_info[0]}')
     keyboard_data = []
     if resp.status_code == 200:
         resp = resp.json()
@@ -48,7 +50,7 @@ def run_action(update, context):
 
 
 def main():
-    updater = Updater('TOKEN', use_context=True)
+    updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
